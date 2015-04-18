@@ -12,7 +12,7 @@ public class Solver {
       *
       * @param r1 rectangle 1
       * @param r2 rectangle 2
-      * @return true if rectangles overlap else false
+      * @return true if rectangles overlap else false.
       */
      public boolean doRectanglesOverlap(Rectangle r1, Rectangle r2) {
           return isCoordinateInRectangle(r1, r2.getBottomLeft())
