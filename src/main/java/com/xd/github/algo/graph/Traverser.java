@@ -55,4 +55,24 @@ public class Traverser {
           }
           return result;
      }
+
+     public <T> List<Node<T>> postOrder(Node<T> root) {
+          
+          List<Node<T>> result = new ArrayList<>();
+          
+          Node<T> left = root.getLeft();
+          if (left != null) {
+               result.addAll(postOrder(left));
+          }
+          
+          Node<T> right = root.getRight();
+          if (right != null) {
+               result.addAll(postOrder(right));
+          }
+
+          result.add(root);
+
+          return result;
+     }
+
 }

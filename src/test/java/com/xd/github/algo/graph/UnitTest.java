@@ -42,6 +42,16 @@ public class UnitTest {
           Assert.assertEquals(expected,output);
      }
 
+     @Test
+     public void postOrderTest() {
+          List<Node<String>> output = traverser.postOrder(getTree());
+          List<Node<String>> expected = new ArrayList<>(Arrays.asList(new Node<>("d"), new Node<>("h"),
+                  new Node<>("e"), new Node<>("b"),
+                  new Node<>("f"), new Node<>("g"),
+                  new Node<>("c"), new Node<>("a")));
+          Assert.assertEquals(expected,output);
+     }
+
      /**
       * Returns graph<br/>
       *
