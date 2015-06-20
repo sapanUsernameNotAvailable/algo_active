@@ -18,7 +18,7 @@ public class UnitTest {
         return data;
     }
 
-    @Test
+    //@Test
     public void testRun() {
         int kSmallesttPosition = quickSelector.getKSmallestPosition(data, 3);
         Assert.assertEquals((long) data[kSmallesttPosition], 40L);
