@@ -1,121 +1,65 @@
 package com.xd.github.algo.graph;
 
-import com.xd.github.ds.Node;
+import com.xd.github.ds.GraphNode;
+import com.xd.github.ds.factory.GraphFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import org.junit.Assert;
+import java.util.Set;
+import java.util.stream.Stream;
+import junit.framework.Assert;
 import org.junit.Test;
 
 public class UnitTest {
+    
+    private final GraphFactory graphFactory = new GraphFactory();
+    private final TopologicalSorter topologicalSorter = new TopologicalSorter();
+    
+    @Test
+    public void testSampleGraphRun() {
+        getBigSampleGraph();
+    }
+    
+    @Test
+    public void testSampleTopologicalSort() {
+        List<Set<GraphNode<Integer>>> sortedGraph = topologicalSorter.sort(getBigSampleGraph());
+        
+        Set<GraphNode<Integer>> firstLevelNodes = new HashSet<>();
+        Stream.of(7, 5, 3).forEach(i -> {
+            firstLevelNodes.add(new GraphNode<>(i));
+        });
+        Set<GraphNode<Integer>> secondLevelNodes = new HashSet<>();
+        Stream.of(11, 8).forEach(i -> {
+            secondLevelNodes.add(new GraphNode<>(i));
+        });
+        Set<GraphNode<Integer>> thirdLevelNodes = new HashSet<>();
+        Stream.of(2, 9, 10).forEach(i -> {
+            thirdLevelNodes.add(new GraphNode<>(i));
+        });
+        List<Set<GraphNode<Integer>>> expectedGraph = new ArrayList<>(Arrays.asList(firstLevelNodes, secondLevelNodes, thirdLevelNodes));
+        Assert.assertEquals(expectedGraph, sortedGraph);
+    }
 
-     private static final Traverser traverser = new Traverser();
-
-     @Test
-     public void bfsTest() {
-          List<Node<String>> output = traverser.bfsTraverse(getGraph());
-          List<Node<String>> expected = new ArrayList<>(Arrays.asList(new Node<>("a"), new Node<>("b"),
-                  new Node<>("c"), new Node<>("d"),
-                  new Node<>("e"), new Node<>("f"),
-                  new Node<>("g"), new Node<>("h")));
-          Assert.assertEquals(expected,output);
-     }
-     
-     @Test
-     public void dfsTest() {
-          List<Node<String>> output = traverser.dfsTraverse(getGraph());
-          List<Node<String>> expected = new ArrayList<>(Arrays.asList(new Node<>("a"), new Node<>("b"),
-                  new Node<>("d"), new Node<>("e"),
-                  new Node<>("h"), new Node<>("c"),
-                  new Node<>("f"), new Node<>("g")));
-          Assert.assertEquals(expected,output);
-     }
-     
-     
-     @Test
-     public void inOrderTest() {
-          List<Node<String>> output = traverser.inOrder(getTree());
-          List<Node<String>> expected = new ArrayList<>(Arrays.asList(new Node<>("d"), new Node<>("b"),
-                  new Node<>("h"), new Node<>("e"),
-                  new Node<>("a"), new Node<>("f"),
-                  new Node<>("c"), new Node<>("g")));
-          Assert.assertEquals(expected,output);
-     }
-
-     @Test
-     public void postOrderTest() {
-          List<Node<String>> output = traverser.postOrder(getTree());
-          List<Node<String>> expected = new ArrayList<>(Arrays.asList(new Node<>("d"), new Node<>("h"),
-                  new Node<>("e"), new Node<>("b"),
-                  new Node<>("f"), new Node<>("g"),
-                  new Node<>("c"), new Node<>("a")));
-          Assert.assertEquals(expected,output);
-     }
-
-     /**
-      * Returns graph<br/>
-      *
-      *      a
-      *     / \
-      *    b   c
-      *   /|   |\
-      *  d e   f g
-      *   /
-      *  h
-      * 
-      * @return graph
-      */
-     private Node<String> getGraph() {
-
-          // eg. TLRRL : start from THE root then move left, right, right, left
-          // left subTree
-          final Node<String> TLL = new Node("d");
-          final Node<String> TLRL = new Node("h");
-          final Node<String> TLR = new Node("e", Arrays.asList(TLRL));
-          final Node<String> TL = new Node("b", Arrays.asList(TLL, TLR));
-
-          // right subTree
-          final Node<String> TRL = new Node("f");
-          final Node<String> TRR = new Node("g");
-          final Node<String> TR = new Node("c", Arrays.asList(TRL, TRR));
-
-          // root
-          final Node<String> T = new Node("a", Arrays.asList(TL, TR));
-
-          return T;
-     }
-     
-     /**
-      * Returns tree<br/>
-      *
-      *      a
-      *     / \
-      *    b   c
-      *   /|   |\
-      *  d e   f g
-      *   /
-      *  h
-      * 
-      * @return tree
-      */
-     private Node<String> getTree() {
-
-          // eg. TLRRL : start from THE root then move left, right, right, left
-          // left subTree
-          final Node<String> TLL = new Node("d", null, null);
-          final Node<String> TLRL = new Node("h", null, null);
-          final Node<String> TLR = new Node("e", TLRL, null);
-          final Node<String> TL = new Node("b", TLL, TLR);
-
-          // right subTree
-          final Node<String> TRL = new Node("f", null, null);
-          final Node<String> TRR = new Node("g", null, null);
-          final Node<String> TR = new Node("c", TRL, TRR);
-
-          // root
-          final Node<String> T = new Node("a", TL, TR);
-
-          return T;
-     }
-     
+    /**
+     * see https://en.wikipedia.org/wiki/Topological_sorting date 7 july 2015
+     *
+     * @return
+     */
+    private Set<GraphNode<Integer>> getBigSampleGraph() {
+        int numberOfNodes = 8;
+        Integer[] nodeValues = new Integer[]{7, 5, 3, 11, 8, 2, 9, 10};
+        boolean[][] adjacencyMatrix = new boolean[][]{
+            // 7     5       3      11    8     2       9       10
+            {false, false, false, true, true, false, false, false,},// 7
+            {false, false, false, true, false, false, false, false,},// 5
+            {false, false, false, false, true, false, false, true,},// 3
+            {false, false, false, false, false, true, true, true,},// 11
+            {false, false, false, false, false, false, true, false,},// 8
+            {false, false, false, false, false, false, false, false,},// 2
+            {false, false, false, false, false, false, false, false,},// 9
+            {false, false, false, false, false, false, false, false,}// 10
+        };
+        return graphFactory.getGraphFromAdjacencyMatrix(numberOfNodes, nodeValues, adjacencyMatrix);
+    }
 }
