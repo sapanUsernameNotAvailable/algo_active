@@ -1,1 +1,1 @@
-Data structures and Algorithm dojo
+Data structures and Algorithm dojo.
