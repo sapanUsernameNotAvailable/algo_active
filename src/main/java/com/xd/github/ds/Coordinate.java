@@ -1,5 +1,6 @@
 package com.xd.github.ds;
 
+
 public class Coordinate {
 
      Number x;
